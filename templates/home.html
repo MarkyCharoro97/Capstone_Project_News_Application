@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}Home - News Platform{% endblock %}
+
+{% block content %}
+<div class="jumbotron bg-light p-5 rounded-lg mb-4">
+    <h1 class="display-4">Welcome to News Platform</h1>
+    <p class="lead">Your source for the latest news and updates from our network of journalists and editors.</p>
+    {% if not user.is_authenticated %}
+        <hr class="my-4">
+        <p>Join our community as a reader, journalist, or editor to get started.</p>
+        <a class="btn btn-primary btn-lg" href="{% url 'register' %}" role="button">Register Now</a>
+        <a class="btn btn-outline-primary btn-lg" href="{% url 'login' %}" role="button">Login</a>
+    {% else %}
+        <hr class="my-4">
+        <p>Welcome back, {{ user.first_name }}! You are logged in as a {{ user.get_role_display }}.</p>
+        {% if user.role == 'journalist' or user.role == 'editor' %}
+            <a class="btn btn-primary btn-lg" href="{% url 'create_article' %}" role="button">Create Article</a>
+        {% endif %}
+        {% if user.role == 'editor' %}
+            <a class="btn btn-success btn-lg" href="{% url 'create_newsletter' %}" role="button">Create Newsletter</a>
+        {% endif %}
+    {% endif %}
+</div>
+
+{% if recent_articles %}
+<div class="row">
+    <div class="col-12">
+        <h2>Recent Articles</h2>
+        <div class="row">
+            {% for article in recent_articles %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ article.title }}</h5>
+                            <p class="card-text">{{ article.content|truncatewords:15 }}</p>
+                            <small class="text-muted">
+                                By {{ article.journalist.username }} • {{ article.created_at|date:"M d, Y" }}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-3">
+            <a href="{% url 'article_list' %}" class="btn btn-outline-primary">View All Articles</a>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="row mt-5">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <h5 class="card-title">For Readers</h5>
+                <p class="card-text">Stay informed with the latest news and subscribe to newsletters.</p>
+                <a href="{% url 'article_list' %}" class="btn btn-primary">Read Articles</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <h5 class="card-title">For Journalists</h5>
+                <p class="card-text">Share your stories and reach a wider audience.</p>
+                {% if user.is_authenticated and user.role == 'journalist' %}
+                    <a href="{% url 'create_article' %}" class="btn btn-primary">Write Article</a>
+                {% else %}
+                    <a href="{% url 'register' %}" class="btn btn-primary">Join as Journalist</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <h5 class="card-title">For Editors</h5>
+                <p class="card-text">Manage content and create newsletters for your audience.</p>
+                {% if user.is_authenticated and user.role == 'editor' %}
+                    <a href="{% url 'pending_articles' %}" class="btn btn-primary">Review Articles</a>
+                {% else %}
+                    <a href="{% url 'register' %}" class="btn btn-primary">Join as Editor</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}My Articles - News Platform{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>My Articles</h2>
+    <a href="{% url 'create_article' %}" class="btn btn-primary">Create New Article</a>
+</div>
+
+{% if articles %}
+    <div class="row">
+        {% for article in articles %}
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">{{ article.title }}</h5>
+                        {% if article.approved %}
+                            <span class="badge bg-success">Approved</span>
+                        {% else %}
+                            <span class="badge bg-warning">Pending</span>
+                        {% endif %}
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">{{ article.content|truncatewords:20 }}</p>
+                        <small class="text-muted">
+                            {% if article.publisher %}
+                                Publisher: {{ article.publisher.name }}<br>
+                            {% endif %}
+                            Created: {{ article.created_at|date:"M d, Y H:i" }}
+                        </small>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="alert alert-info">
+        <h4>No articles found</h4>
+        <p>You haven't created any articles yet.</p>
+        <a href="{% url 'create_article' %}" class="btn btn-primary">Create your first article</a>
+    </div>
+{% endif %}
+{% endblock %}
+

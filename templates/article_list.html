@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Articles - News Platform{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Articles</h1>
+    {% if user_can_create %}
+        <a href="{% url 'create_article' %}" class="btn btn-primary">Create Article</a>
+    {% endif %}
+</div>
+
+{% if articles %}
+    <div class="row">
+        {% for article in articles %}
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">{{ article.title }}</h5>
+                        <span class="badge bg-success">Published</span>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">{{ article.content|truncatewords:30 }}</p>
+                        <small class="text-muted">
+                            By: {{ article.journalist.username }}<br>
+                            {% if article.publisher %}
+                                Publisher: {{ article.publisher.name }}<br>
+                            {% endif %}
+                            Published: {{ article.created_at|date:"M d, Y H:i" }}
+                        </small>
+                    </div>
+                    {% if user_can_approve and not article.approved %}
+                    <div class="card-footer">
+                        <a href="{% url 'approve_article' article.id %}" class="btn btn-success btn-sm">Approve</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="alert alert-info">
+        <h4>No articles available</h4>
+        <p>There are currently no published articles to display.</p>
+        {% if user_can_create %}
+            <a href="{% url 'create_article' %}" class="btn btn-primary">Create the first article</a>
+        {% endif %}
+    </div>
+{% endif %}
+{% endblock %}
