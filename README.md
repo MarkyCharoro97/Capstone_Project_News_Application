@@ -90,3 +90,18 @@ Browse published articles
 Subscribe to newsletters
 Stay updated with latest content
 
+Clone the repo
+
+git clone https://github.com/YOUR-USERNAME/ecommerce_project.git cd ecommerce_project
+
+2.** Creation of virtual enviroment* 
+python -m venv venv source venv/bin/activate # Linux/Mac
+venv\Scripts\activate # 
+Windows 3. Install dependencies pip install -r requirements.txt 
+4. Apply migrations python manage.py migrate 
+5. Create superuser* 
+python manage.py createsuperuser 
+6. Run server* 
+python manage.py runserver 
+Configure Twitter API TWITTER_API_KEY=your_api_key TWITTER_API_SECRET=your_api_secret TWITTER_ACCESS_TOKEN=your_access_token TWITTER_ACCESS_SECRET=your_access_secret
+
